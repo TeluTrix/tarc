@@ -9,11 +9,12 @@ import (
 )
 
 type SchemaUser struct {
-	ID        uuid.UUID `gorm:"primaryKey"`
+	ID        uuid.UUID `gorm:"type:char(36);primaryKey"`
 	Email     string
 	Password  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Role      role.SchemaRole
+	DeletedAt gorm.DeletedAt  `gorm:"index"`
+	RoleName  string          `gorm:"type:varchar(191);not null"`
+	Role      role.SchemaRole `gorm:"foreignKey:RoleName;references:Name"`
 }
