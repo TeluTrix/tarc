@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/TeluTrix/tarc/api/auth"
 	"github.com/TeluTrix/tarc/api/role"
 	"github.com/TeluTrix/tarc/api/user"
 	"github.com/joho/godotenv"
@@ -28,7 +29,7 @@ func (db *DB) ConnectToDB() {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, name)
 
 	var err error
-	db.Conn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db.Conn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{TranslateError: true})
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
@@ -50,7 +51,7 @@ func (db *DB) MigrateModels() error {
 		return err
 	}
 
-	if err := db.Conn.AutoMigrate(&role.SchemaRole{}, &user.SchemaUser{}); err != nil {
+	if err := db.Conn.AutoMigrate(&role.SchemaRole{}, &user.SchemaUser{}, &auth.Session{}); err != nil {
 		return err
 	}
 
