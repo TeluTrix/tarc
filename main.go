@@ -8,6 +8,7 @@ import (
 
 	"github.com/TeluTrix/tarc/api/auth"
 	"github.com/TeluTrix/tarc/api/db"
+	frontend "github.com/TeluTrix/tarc/web"
 )
 
 func main() {
@@ -23,6 +24,7 @@ func main() {
 	authService := auth.NewService(database.Conn)
 	mux := http.NewServeMux()
 	authService.RegisterRoutes(mux)
+	mux.Handle("/", frontend.Handler())
 
 	addr := os.Getenv("HTTP_ADDR")
 	if addr == "" {

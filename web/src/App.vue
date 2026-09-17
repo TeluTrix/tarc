@@ -1,11 +1,29 @@
-<script setup lang="ts"></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <nav>
+    <RouterLink to="/profile">Profile</RouterLink>
+    <span> | </span>
+    <button v-if="authenticated" type="button" @click="logout">Log out</button>
+  </nav>
+  <main>
+    <RouterView />
+  </main>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { logout as signOut, isAuthenticated } from '@/auth'
+
+const router = useRouter()
+const authenticated = ref(false)
+
+isAuthenticated().then((value) => {
+  authenticated.value = value
+})
+
+async function logout() {
+  await signOut()
+  authenticated.value = false
+  await router.push('/login')
+}
+</script>
